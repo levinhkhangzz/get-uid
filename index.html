@@ -136,9 +136,7 @@
         loadingElement.classList.remove('hidden');
         uidResult.innerHTML = '';
 
-        const formattedLink = formatFacebookLink(facebookLink);
-
-        const apiUrl = `https://fbuid.mktsoftware.net/api/v1/fbprofile?url=${encodeURIComponent(formattedLink)}`;
+        const apiUrl = `https://fbuid.mktsoftware.net/api/v1/fbprofile?url=${encodeURIComponent(facebookLink)}`;
 
         fetch(apiUrl)
             .then(response => response.json())
@@ -198,24 +196,7 @@
         document.getElementById('getUidButton').classList.remove('hidden');
         document.getElementById('copyButton').classList.add('hidden');
     }
-
-    function formatFacebookLink(link) {
-        if (link.includes('fb.com/')) {
-            const parts = link.split('/');
-            if (parts.length === 2) {
-                const userId = parts[1];
-                return `https://facebook.com/${userId}`;
-            }
-        }
-
-        if (link.startsWith('https://facebook.com/')) {
-            return link;
-        }
-
-        return null;
-    }
 </script>
-
 </body>
 
 </html>

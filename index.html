@@ -89,21 +89,17 @@
 
             <div id="uidResult" class="mt-4"></div>
 
-            <button onclick="copyUid()" id="copyButton" class="hidden w-full mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                Copy UID
-            </button>
-
             <div class="flex justify-between items-center mt-4">
                 <!-- Remove the Reset All button -->
 
                 <!-- Popup container -->
                 <div class="popup-container">
                     <div id="popupSuccess" class="popup popup-success">
-                        UID Obtained Successfully!
+                        Get UID Successfully!
                     </div>
 
                     <div id="popupError" class="popup popup-error">
-                        Error: UID not found or an API error occurred.
+                        Error: UID not found.
                     </div>
                 </div>
             </div>
@@ -129,7 +125,6 @@
         const facebookLink = document.getElementById('facebookLink').value;
         const loadingElement = document.getElementById('loading');
         const uidResult = document.getElementById('uidResult');
-        const copyButton = document.getElementById('copyButton');
 
         document.getElementById('facebookLink').disabled = true;
         document.getElementById('getUidButton').disabled = true;
@@ -151,20 +146,10 @@
 
                     if (data.uid) {
                         document.getElementById('facebookLink').value = data.uid;
-                        document.getElementById('getUidButton').classList.add('hidden');
-                        copyButton.classList.remove('hidden');
                         showPopup('popupSuccess', 'UID Obtained Successfully!');
-
-                        setTimeout(() => {
-                            resetForm();
-                        }, 20000);
                     } else {
                         uidResult.innerHTML = `<p class="text-red-600">Error: UID not found in the response</p>`;
                         showPopup('popupError', 'Error: UID not found or an API error occurred.');
-
-                        setTimeout(() => {
-                            resetForm();
-                        }, 20000);
                     }
                 })
                 .catch(error => {
@@ -173,10 +158,6 @@
                     loadingElement.classList.add('hidden');
                     uidResult.innerHTML = `<p class="text-red-600">Error: ${error.message}</p>`;
                     showPopup('popupError', 'Error: ' + error.message);
-
-                    setTimeout(() => {
-                        resetForm();
-                    }, 20000);
                 });
         } else {
             const userIdMatch = facebookLink.match(/profile\.php\?id=(\d+)/);
@@ -194,20 +175,10 @@
 
                         if (data.uid) {
                             document.getElementById('facebookLink').value = data.uid;
-                            document.getElementById('getUidButton').classList.add('hidden');
-                            copyButton.classList.remove('hidden');
                             showPopup('popupSuccess', 'UID Obtained Successfully!');
-
-                            setTimeout(() => {
-                                resetForm();
-                            }, 20000);
                         } else {
                             uidResult.innerHTML = `<p class="text-red-600">Error: UID not found in the response</p>`;
                             showPopup('popupError', 'Error: UID not found or an API error occurred.');
-
-                            setTimeout(() => {
-                                resetForm();
-                            }, 20000);
                         }
                     })
                     .catch(error => {
@@ -216,10 +187,6 @@
                         loadingElement.classList.add('hidden');
                         uidResult.innerHTML = `<p class="text-red-600">Error: ${error.message}</p>`;
                         showPopup('popupError', 'Error: ' + error.message);
-
-                        setTimeout(() => {
-                            resetForm();
-                        }, 20000);
                     });
             } else {
 
@@ -238,20 +205,10 @@
 
                             if (data.uid) {
                                 document.getElementById('facebookLink').value = data.uid;
-                                document.getElementById('getUidButton').classList.add('hidden');
-                                copyButton.classList.remove('hidden');
                                 showPopup('popupSuccess', 'UID Obtained Successfully!');
-
-                                setTimeout(() => {
-                                    resetForm();
-                                }, 20000);
                             } else {
                                 uidResult.innerHTML = `<p class="text-red-600">Error: UID not found in the response</p>`;
                                 showPopup('popupError', 'Error: UID not found or an API error occurred.');
-
-                                setTimeout(() => {
-                                    resetForm();
-                                }, 20000);
                             }
                         })
                         .catch(error => {
@@ -260,10 +217,6 @@
                             loadingElement.classList.add('hidden');
                             uidResult.innerHTML = `<p class="text-red-600">Error: ${error.message}</p>`;
                             showPopup('popupError', 'Error: ' + error.message);
-
-                            setTimeout(() => {
-                                resetForm();
-                            }, 20000);
                         });
                 } else {
                     document.getElementById('facebookLink').disabled = false;
@@ -271,34 +224,16 @@
                     loadingElement.classList.add('hidden');
                     uidResult.innerHTML = `<p class="text-red-600">Error: Invalid input format</p>`;
                     showPopup('popupError', 'Error: Invalid input format. Please enter a valid Facebook profile link.');
-
-                    setTimeout(() => {
-                        resetForm();
-                    }, 20000);
                 }
             }
         }
     }
 
     function copyUid() {
-        const uidResult = document.getElementById('facebookLink').value;
-        const textarea = document.createElement('textarea');
-        textarea.value = uidResult;
-        document.body.appendChild(textarea);
-        textarea.select();
+        const uidResult = document.getElementById('facebookLink');
+        uidResult.select();
         document.execCommand('copy');
-        document.body.removeChild(textarea);
-        showPopup('popupSuccess', 'UID copied to clipboard: ' + uidResult);
-
-        setTimeout(() => {
-            resetForm();
-        }, 20000);
-    }
-
-    function resetForm() {
-        document.getElementById('facebookLink').value = '';
-        document.getElementById('getUidButton').classList.remove('hidden');
-        document.getElementById('copyButton').classList.add('hidden');
+        showPopup('popupSuccess', 'UID copied to clipboard: ' + uidResult.value);
     }
 </script>
 </body>

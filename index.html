@@ -136,12 +136,11 @@
         loadingElement.classList.remove('hidden');
         uidResult.innerHTML = '';
 
-        // Extract user ID from the input link
-        const userIdMatch = facebookLink.match(/profile\.php\?id=(\d+)/);
+        if (facebookLink.startsWith('https://fb.com/')) {
+            const correctedLink = facebookLink.replace('https://fb.com/', 'https://facebook.com/');
+            document.getElementById('facebookLink').value = correctedLink;
 
-        if (userIdMatch) {
-            const userId = userIdMatch[1];
-            const apiUrl = `https://fbuid.mktsoftware.net/api/v1/fbprofile?url=https://www.facebook.com/profile.php?id=${userId}`;
+            const apiUrl = `https://fbuid.mktsoftware.net/api/v1/fbprofile?url=${encodeURIComponent(correctedLink)}`;
 
             fetch(apiUrl)
                 .then(response => response.json())
@@ -180,12 +179,11 @@
                     }, 20000);
                 });
         } else {
-            // Extract profile URL from the input link
-            const profileUrlMatch = facebookLink.match(/facebook\.com\/(.*?)(?:\?|$)/);
-            
-            if (profileUrlMatch) {
-                const profileUrl = `https://www.facebook.com/${profileUrlMatch[1]}`;
-                const apiUrl = `https://fbuid.mktsoftware.net/api/v1/fbprofile?url=${encodeURIComponent(profileUrl)}`;
+            const userIdMatch = facebookLink.match(/profile\.php\?id=(\d+)/);
+
+            if (userIdMatch) {
+                const userId = userIdMatch[1];
+                const apiUrl = `https://fbuid.mktsoftware.net/api/v1/fbprofile?url=https://www.facebook.com/profile.php?id=${userId}`;
 
                 fetch(apiUrl)
                     .then(response => response.json())
@@ -224,16 +222,60 @@
                         }, 20000);
                     });
             } else {
-                // Handle invalid input format
-                document.getElementById('facebookLink').disabled = false;
-                document.getElementById('getUidButton').disabled = false;
-                loadingElement.classList.add('hidden');
-                uidResult.innerHTML = `<p class="text-red-600">Error: Invalid input format</p>`;
-                showPopup('popupError', 'Error: Invalid input format. Please enter a valid Facebook profile link.');
 
-                setTimeout(() => {
-                    resetForm();
-                }, 20000);
+                const profileUrlMatch = facebookLink.match(/facebook\.com\/(.*?)(?:\?|$)/);
+                
+                if (profileUrlMatch) {
+                    const profileUrl = `https://www.facebook.com/${profileUrlMatch[1]}`;
+                    const apiUrl = `https://fbuid.mktsoftware.net/api/v1/fbprofile?url=${encodeURIComponent(profileUrl)}`;
+
+                    fetch(apiUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('facebookLink').disabled = false;
+                            document.getElementById('getUidButton').disabled = false;
+                            loadingElement.classList.add('hidden');
+
+                            if (data.uid) {
+                                document.getElementById('facebookLink').value = data.uid;
+                                document.getElementById('getUidButton').classList.add('hidden');
+                                copyButton.classList.remove('hidden');
+                                showPopup('popupSuccess', 'UID Obtained Successfully!');
+
+                                setTimeout(() => {
+                                    resetForm();
+                                }, 20000);
+                            } else {
+                                uidResult.innerHTML = `<p class="text-red-600">Error: UID not found in the response</p>`;
+                                showPopup('popupError', 'Error: UID not found or an API error occurred.');
+
+                                setTimeout(() => {
+                                    resetForm();
+                                }, 20000);
+                            }
+                        })
+                        .catch(error => {
+                            document.getElementById('facebookLink').disabled = false;
+                            document.getElementById('getUidButton').disabled = false;
+                            loadingElement.classList.add('hidden');
+                            uidResult.innerHTML = `<p class="text-red-600">Error: ${error.message}</p>`;
+                            showPopup('popupError', 'Error: ' + error.message);
+
+                            setTimeout(() => {
+                                resetForm();
+                            }, 20000);
+                        });
+                } else {
+                    document.getElementById('facebookLink').disabled = false;
+                    document.getElementById('getUidButton').disabled = false;
+                    loadingElement.classList.add('hidden');
+                    uidResult.innerHTML = `<p class="text-red-600">Error: Invalid input format</p>`;
+                    showPopup('popupError', 'Error: Invalid input format. Please enter a valid Facebook profile link.');
+
+                    setTimeout(() => {
+                        resetForm();
+                    }, 20000);
+                }
             }
         }
     }

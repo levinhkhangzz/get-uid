@@ -2,237 +2,172 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facebook UID Tool</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.3/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        .popup-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-end;
-            padding: 10px;
-        }
-
-        .popup {
-            padding: 15px;
-            border-radius: 8px;
-            display: none;
-            animation: fadeInOut 5s ease-in-out;
-        }
-
-        .popup-success {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .popup-error {
-            background-color: #FF6347;
-            color: white;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% {
-                opacity: 0;
-            }
-            10%, 90% {
-                opacity: 1;
-            }
-        }
-        .reset-button {
-            cursor: pointer;
-        }
-        .custom-button {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: background-color 0.3s;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facebook UID Retriever</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100">
-
-    <div class="min-h-screen flex justify-center items-center">
-
-        <div class="w-full max-w-md p-6 bg-white rounded-md shadow-md">
-            <h2 class="text-2xl font-semibold mb-6">Facebook UID Tool</h2>
-
-            <div class="mb-4">
-                <label for="facebookLink" class="block text-sm font-medium text-gray-600 mb-2">Facebook Profile Link</label>
-                <input type="text" id="facebookLink" class="w-full p-2 border rounded-md" placeholder="Enter Facebook Profile Link">
+<body class="bg-gray-100 dark:bg-gray-900">
+  <main class="p-6 min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full space-y-8">
+      <div class="text-center">
+        <h1 class="text-4xl font-bold text-blue-500 dark:text-blue-300">
+          Get Facebook UID
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400">
+          Nhập link hồ sơ Facebook của bạn để lấy UID
+        </p>
+      </div>
+      <div class="rounded-lg border bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-md px-8 py-6 space-y-4">
+        <form id="fbForm">
+          <div class="space-y-2">
+            <label for="fb-link" class="text-sm font-medium">Đường dẫn hồ sơ Facebook</label>
+            <div class="relative rounded-md shadow-sm">
+              <input id="fb-link" class="w-full h-10 rounded-md border px-3 py-2 pr-10 text-sm focus:outline-none focus:ring focus:border-blue-500" type="url" placeholder="https://www.facebook.com/your-profile" required>
+              <button type="button" onclick="copyUid()" class="absolute inset-y-0 right-0 flex items-center px-2 text-blue-500 hover:text-blue-600">
+                <!-- Icon SVG Copy -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 11C6 8.17157 6 6.75736 6.87868 5.87868C7.75736 5 9.17157 5 12 5H15C17.8284 5 19.2426 5 20.1213 5.87868C21 6.75736 21 8.17157 21 11V16C21 18.8284 21 20.2426 20.1213 21.1213C19.2426 22 17.8284 22 15 22H12C9.17157 22 7.75736 22 6.87868 21.1213C6 20.2426 6 18.8284 6 16V11Z"/>
+                  <path opacity="0.5" d="M6 19C4.34315 19 3 17.6569 3 16V10C3 6.22876 3 4.34315 4.17157 3.17157C5.34315 2 7.22876 2 11 2H15C16.6569 2 18 3.34315 18 5" stroke="#1C274C" stroke-width="1.5"/>
+                </svg>
+              </button>
             </div>
-
-            <button onclick="getUid()" id="getUidButton" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Get UID
+          </div>
+          <div class="mt-4">
+            <button class="w-full bg-blue-500 text-white rounded-md hover:bg-blue-600 py-2 font-medium transition duration-300 focus:outline-none focus:ring focus:border-blue-500" type="button" onclick="getUid()">
+              Lấy UID
             </button>
-
-            <div id="loading" class="hidden text-blue-500 mt-2">
-                <i class="fas fa-spinner fa-spin"></i> Loading...
-            </div>
-
-            <div id="uidResult" class="mt-4"></div>
-
-            <div class="flex justify-between items-center mt-4">
-
-                <div class="popup-container">
-                    <div id="popupSuccess" class="popup popup-success">
-                        Get UID Successfully!
-                    </div>
-
-                    <div id="popupError" class="popup popup-error">
-                        Error: UID not found.
-                    </div>
-                </div>
-            </div>
+          </div>
+        </form>
+      </div>
+      <div id="loading" class="hidden rounded-lg border shadow-md px-8 py-6 space-y-3 bg-blue-100 dark:bg-blue-800 text-blue-900 dark:text-blue-100 flex items-center slide-down">
+        <div class="flex flex-col space-y-1.5 p-6">
+          <div class="flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 animate-spin text-blue-500">
+              <line x1="12" x2="12" y1="2" y2="6"></line>
+              <line x1="12" x2="12" y1="18" y2="22"></line>
+              <line x1="4.93" x2="7.76" y1="4.93" y2="7.76"></line>
+              <line x1="16.24" x2="19.07" y1="16.24" y2="19.07"></line>
+              <line x1="2" x2="6" y1="12" y2="12"></line>
+              <line x1="18" x2="22" y1="12" y2="12"></line>
+              <line x1="4.93" x2="7.76" y1="19.07" y2="16.24"></line>
+              <line x1="16.24" x2="19.07" y1="7.76" y2="4.93"></line>
+            </svg>
+            <h2 class="text-lg font-semibold">
+              Đang tải...
+            </h2>
+          </div>
         </div>
-    </div>
-
- <script>
-    function showPopup(popupId, message) {
-        const popup = document.getElementById(popupId);
-        popup.innerHTML = message;
-        popup.style.display = 'block';
-        setTimeout(() => {
-            hidePopup(popupId);
-        }, 5000);
-    }
-
-    function hidePopup(popupId) {
-        const popup = document.getElementById(popupId);
-        popup.style.display = 'none';
-    }
-
-    function getUid() {
-        const facebookLink = document.getElementById('facebookLink').value;
-        const loadingElement = document.getElementById('loading');
-        const uidResult = document.getElementById('uidResult');
-
-        document.getElementById('facebookLink').disabled = true;
-        document.getElementById('getUidButton').disabled = true;
-        loadingElement.classList.remove('hidden');
-        uidResult.innerHTML = '';
-
-        if (facebookLink.startsWith('https://fb.com/')) {
-            const correctedLink = facebookLink.replace('https://fb.com/', 'https://facebook.com/');
-            document.getElementById('facebookLink').value = correctedLink;
-
-            const apiUrl = `https://fbuid.mktsoftware.net/api/v1/fbprofile?url=${encodeURIComponent(correctedLink)}`;
-
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('facebookLink').disabled = false;
-                    document.getElementById('getUidButton').disabled = false;
-                    loadingElement.classList.add('hidden');
-
-                    if (data.uid) {
-                        document.getElementById('facebookLink').value = data.uid;
-                        showPopup('popupSuccess', 'UID Obtained Successfully!');
-                    } else {
-                        uidResult.innerHTML = `<p class="text-red-600">Error: UID not found in the response</p>`;
-                        showPopup('popupError', 'Error: UID not found or an API error occurred.');
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('facebookLink').disabled = false;
-                    document.getElementById('getUidButton').disabled = false;
-                    loadingElement.classList.add('hidden');
-                    uidResult.innerHTML = `<p class="text-red-600">Error: ${error.message}</p>`;
-                    showPopup('popupError', 'Error: ' + error.message);
-                });
-        } else {
-            const userIdMatch = facebookLink.match(/profile\.php\?id=(\d+)/);
-
-            if (userIdMatch) {
-                const userId = userIdMatch[1];
-                const apiUrl = `https://fbuid.mktsoftware.net/api/v1/fbprofile?url=https://www.facebook.com/profile.php?id=${userId}`;
-
-                fetch(apiUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('facebookLink').disabled = false;
-                        document.getElementById('getUidButton').disabled = false;
-                        loadingElement.classList.add('hidden');
-
-                        if (data.uid) {
-                            document.getElementById('facebookLink').value = data.uid;
-                            showPopup('popupSuccess', 'UID Obtained Successfully!');
-                        } else {
-                            uidResult.innerHTML = `<p class="text-red-600">Error: UID not found in the response</p>`;
-                            showPopup('popupError', 'Error: UID not found or an API error occurred.');
-                        }
-                    })
-                    .catch(error => {
-                        document.getElementById('facebookLink').disabled = false;
-                        document.getElementById('getUidButton').disabled = false;
-                        loadingElement.classList.add('hidden');
-                        uidResult.innerHTML = `<p class="text-red-600">Error: ${error.message}</p>`;
-                        showPopup('popupError', 'Error: ' + error.message);
-                    });
-            } else {
-
-                const profileUrlMatch = facebookLink.match(/facebook\.com\/(.*?)(?:\?|$)/);
-                
-                if (profileUrlMatch) {
-                    const profileUrl = `https://www.facebook.com/${profileUrlMatch[1]}`;
-                    const apiUrl = `https://fbuid.mktsoftware.net/api/v1/fbprofile?url=${encodeURIComponent(profileUrl)}`;
-
-                    fetch(apiUrl)
-                        .then(response => response.json())
-                        .then(data => {
-                            document.getElementById('facebookLink').disabled = false;
-                            document.getElementById('getUidButton').disabled = false;
-                            loadingElement.classList.add('hidden');
-
-                            if (data.uid) {
-                                document.getElementById('facebookLink').value = data.uid;
-                                showPopup('popupSuccess', 'UID Obtained Successfully!');
-                            } else {
-                                uidResult.innerHTML = `<p class="text-red-600">Error: UID not found in the response</p>`;
-                                showPopup('popupError', 'Error: UID not found or an API error occurred.');
-                            }
-                        })
-                        .catch(error => {
-                            document.getElementById('facebookLink').disabled = false;
-                            document.getElementById('getUidButton').disabled = false;
-                            loadingElement.classList.add('hidden');
-                            uidResult.innerHTML = `<p class="text-red-600">Error: ${error.message}</p>`;
-                            showPopup('popupError', 'Error: ' + error.message);
-                        });
-                } else {
-                    document.getElementById('facebookLink').disabled = false;
-                    document.getElementById('getUidButton').disabled = false;
-                    loadingElement.classList.add('hidden');
-                    uidResult.innerHTML = `<p class="text-red-600">Error: Invalid input format</p>`;
-                    showPopup('popupError', 'Error: Invalid input format. Please enter a valid Facebook profile link.');
-                }
+        <div class="p-6">
+          <p class="text-gray-600 dark:text-gray-400">
+            Đang lấy UID Facebook của bạn. Vui lòng đợi...
+          </p>
+        </div>
+      </div>
+      <div id="success" class="hidden rounded-lg border shadow-md px-8 py-6 space-y-3 bg-green-100 dark:bg-green-800 text-green-900 dark:text-green-100 flex items-center slide-down">
+        <div class="flex flex-col space-y-1.5 p-6">
+          <div class="flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-green-500 dark:text-green-200">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <h2 class="text-lg font-semibold">
+              Thành công
+            </h2>
+          </div>
+        </div>
+        <div class="p-6">
+          <p id="successMessage" class="text-gray-600 dark:text-gray-400">
+            Lấy UID người dùng thành công.
+          </p>
+        </div>
+      </div>
+      <div id="error" class="hidden rounded-lg border shadow-md px-8 py-6 space-y-4 bg-red-100 dark:bg-red-800 text-red-900 dark:text-red-100 flex items-center slide-down">
+        <div class="flex flex-col space-y-1.5 p-6">
+          <div class="flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-red-500 dark:text-red-200">
+                <path d="m8 2 1.88 1.88"></path>
+                <path d="M14.12 3.88 16 2"></path>
+                <path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"></path>
+                <path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 a4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"></path>
+                <path d="M12 20v-9"></path>
+                <path d="M6.53 9C4.6 8.8 3 7.1 3 5"></path>
+                <path d="M6 13H2"></path>
+                <path d="M3 21c0-2.1 1.7-3.9 3.8-4"></path>
+                <path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"></path>
+                <path d="M22 13h-4"></path>
+                <path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"></path>
+              </svg>
+              <h2 class="text-lg font-semibold">
+                Lỗi
+              </h2>
+            </div>
+          </div>
+          <div class="p-6">
+            <p id="errorMessage">
+              Có lỗi khi lấy UID Facebook của bạn. Vui lòng kiểm tra lại đường dẫn và thử lại.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+  
+    <script>
+      function getUid() {
+        document.getElementById('loading').classList.remove('hidden');
+        document.getElementById('success').classList.add('hidden');
+        document.getElementById('error').classList.add('hidden');
+  
+        var fbUrl = document.getElementById('fb-link').value;
+  
+        // Call the API
+        fetch(`https://fbuid.mktsoftware.net/api/v1/fbprofile?url=${encodeURIComponent(fbUrl)}`)
+          .then(response => response.json())
+          .then(data => {
+            document.getElementById('loading').classList.add('hidden');
+  
+            console.log(data);
+  
+            if (data.uid) {
+              document.getElementById('success').classList.remove('hidden');
+              var uidValue = data.uid.trim();
+              document.getElementById('successMessage').innerText = 'Lấy UID người dùng thành công.';
+              document.getElementById('fb-link').value = uidValue; // Set input value to UID
+            } else { 
+              document.getElementById('error').classList.remove('hidden');
+              document.getElementById('errorMessage').innerText = 'Có lỗi khi lấy UID Facebook của bạn. Vui lòng kiểm tra lại đường dẫn và thử lại.';
             }
-        }
-    }
+          })
+          .catch(error => {
+           
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('error').classList.remove('hidden');
+            document.getElementById('errorMessage').innerText = 'Có lỗi khi lấy UID Facebook của bạn. Vui lòng kiểm tra lại đường dẫn và thử lại.';
+          });
+      }
+  
+      function copyUid() {
+        
+        var uidValue = document.getElementById('fb-link').value;
+  
+       
+        var textarea = document.createElement('textarea');
+        textarea.value = uidValue;
+  
+     
+        document.body.appendChild(textarea);
+  
+   
+        textarea.select();
+  
 
-    function copyUid() {
-        const uidResult = document.getElementById('facebookLink');
-        uidResult.select();
         document.execCommand('copy');
-        showPopup('popupSuccess', 'UID copied to clipboard: ' + uidResult.value);
-    }
-</script>
-</body>
+  
 
-</html>
+        document.body.removeChild(textarea);
+      }
+    </script>
+  </body>
+  
+  </html>
+  

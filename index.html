@@ -112,61 +112,60 @@
       </div>
     </main>
   
-    <script>
-      function getUid() {
-        document.getElementById('loading').classList.remove('hidden');
-        document.getElementById('success').classList.add('hidden');
-        document.getElementById('error').classList.add('hidden');
-  
-        var fbUrl = document.getElementById('fb-link').value;
-  
-        // Call the API
-        fetch(`https://fbuid.mktsoftware.net/api/v1/fbprofile?url=${encodeURIComponent(fbUrl)}`)
+  <script>
+    function getUid() {
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('success').classList.add('hidden');
+      document.getElementById('error').classList.add('hidden');
+
+      var fbUrl = document.getElementById('fb-link').value;
+
+      if (isValidFacebookUrl(fbUrl)) {
+        var url = new URL(fbUrl);
+        url.searchParams.delete('mibextid');
+
+        fetch(`https://fbuid.mktsoftware.net/api/v1/fbprofile?url=${encodeURIComponent(url.toString())}`)
           .then(response => response.json())
           .then(data => {
             document.getElementById('loading').classList.add('hidden');
-  
-            console.log(data);
-  
+
             if (data.uid) {
               document.getElementById('success').classList.remove('hidden');
               var uidValue = data.uid.trim();
               document.getElementById('successMessage').innerText = 'Lấy UID người dùng thành công.';
-              document.getElementById('fb-link').value = uidValue; // Set input value to UID
+              document.getElementById('fb-link').value = uidValue;
             } else { 
               document.getElementById('error').classList.remove('hidden');
               document.getElementById('errorMessage').innerText = 'Có lỗi khi lấy UID Facebook của bạn. Vui lòng kiểm tra lại đường dẫn và thử lại.';
             }
           })
           .catch(error => {
-           
             document.getElementById('loading').classList.add('hidden');
             document.getElementById('error').classList.remove('hidden');
             document.getElementById('errorMessage').innerText = 'Có lỗi khi lấy UID Facebook của bạn. Vui lòng kiểm tra lại đường dẫn và thử lại.';
           });
+      } else {
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('error').classList.remove('hidden');
+        document.getElementById('errorMessage').innerText = 'Vui lòng nhập URL hợp lệ của Facebook.';
       }
-  
-      function copyUid() {
-        
-        var uidValue = document.getElementById('fb-link').value;
-  
-       
-        var textarea = document.createElement('textarea');
-        textarea.value = uidValue;
-  
-     
-        document.body.appendChild(textarea);
-  
-   
-        textarea.select();
-  
+    }
 
-        document.execCommand('copy');
-  
+    function isValidFacebookUrl(url) {
+      var facebookUrlRegex = /^(https?:\/\/)?(www\.)?facebook\.com\/.*/;
+      return facebookUrlRegex.test(url);
+    }
 
-        document.body.removeChild(textarea);
-      }
-    </script>
+    function copyUid() {
+      var uidValue = document.getElementById('fb-link').value;
+      var textarea = document.createElement('textarea');
+      textarea.value = uidValue;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
+  </script>
   </body>
   
   </html>
